@@ -1,7 +1,7 @@
 import sqlite3
-
+#Create the database
 conn = sqlite3.connect('nyondo_stock.db')
-
+#Create the table
 conn.execute('''
 CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS products (
 )
 ''')
 
-
+#Insert the data
 conn.executemany(
     'INSERT INTO products (name, description, price) VALUES (?, ?, ?)',
     [
@@ -23,7 +23,7 @@ conn.executemany(
     ]
 )
 
-
+#Create the table
 conn.execute('''
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,14 +32,14 @@ CREATE TABLE IF NOT EXISTS users (
     role TEXT DEFAULT 'attendant'
 )
 ''')
-
+#Insert the data
 conn.execute('''
 INSERT OR IGNORE INTO users (username, password, role) VALUES
 ('admin', 'admin123', 'admin'),
 ('fatuma', 'pass456', 'attendant'),
 ('wasswa', 'pass789', 'manager')
 ''')
-
+#Commit the changes and save data permanently
 conn.commit()
 
 rows = conn.execute('SELECT * FROM products').fetchall()
