@@ -44,7 +44,7 @@ print("Reject space username:", login_safe("ad min", "pass123"))
 
 
 # I connect to the database
-# I establish a secure connection to the database (SQLite/MySQL/PostgreSQL)
+# I establish a secure connection to the database 
 
 
 # SAFE SEARCH FUNCTION
