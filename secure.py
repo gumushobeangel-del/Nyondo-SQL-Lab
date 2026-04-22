@@ -43,34 +43,43 @@ print("Reject short password:", login_safe("admin", "ab"))
 print("Reject space username:", login_safe("ad min", "pass123"))
 
 
-# connect to the database
+# I connect to the database
+# I establish a secure connection to the database (SQLite/MySQL/PostgreSQL)
+
 
 # SAFE SEARCH FUNCTION
 
-# check input is valid (must be text, at least 2 characters, no < > ;)
-# stop if input is bad
+# I check if the input is valid:
+# it must be a string
+# it must be at least 2 characters long
+# it must not contain dangerous characters like < > 
 
-# use ? to make query safe (prevents SQL injection)
-# add % for searching part of the name
-# run query and get results
+# I use parameterized queries (? or %s depending on the database) to prevent SQL injection
+
+# I use LIKE with % so I can search for partial matches
+
+# I run the query safely and get the results
 
 
 # SAFE LOGIN FUNCTION
 
-# check username is not empty and has no spaces
-# stop if username is bad
+# I check that the username is valid:
+# it must not be empty
+# it must not contain spaces
 
-# check password is at least 6 characters
-# stop if password is bad
+# I check that the password is valid:
+# it must be at least 6 characters long
+# it should be hashed before storing or checking
 
-# use ? to make login query safe
-# run query safely and get one result
+# I use parameterized queries (? or %s) to make the login query safe
+
+# I run the query safely and return one matching user
 
 
 # TEST CASES
 
-# attack tests (these should fail)
+# I test SQL injection attempts to make sure they fail
 
-# normal valid inputs (these should work)
+# I test normal valid inputs to make sure they work
 
-# bad inputs (these should be rejected)
+# I test invalid inputs to make sure they are rejected
